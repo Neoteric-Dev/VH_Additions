@@ -11,6 +11,7 @@
     "MixinExpertisesGuiConfig",
     "MixinGearModificationAction",
     "MixinJewelExpertise",
+    "MixinModificationButtonElement",
     "MixinModifierWorkbenchTileEntity",
     "MixinPlayerResearchesData",
     "MixinStageManager",

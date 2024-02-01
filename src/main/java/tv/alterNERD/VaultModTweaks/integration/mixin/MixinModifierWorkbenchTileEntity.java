@@ -1,6 +1,5 @@
 package tv.alterNERD.VaultModTweaks.integration.mixin;
 
-import iskallia.vault.block.ModifierWorkbenchBlock;
 import iskallia.vault.block.entity.ModifierWorkbenchTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;

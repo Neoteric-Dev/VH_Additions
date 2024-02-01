@@ -1,13 +1,10 @@
 package tv.alterNERD.VaultModTweaks.integration.mixin;
 
-import iskallia.vault.block.entity.VaultArtisanStationTileEntity;
 import iskallia.vault.container.VaultArtisanStationContainer;
 import iskallia.vault.container.oversized.OverSizedSlotContainer;
 import iskallia.vault.container.oversized.OverSizedTabSlot;
 import iskallia.vault.container.slot.TabSlot;
 import iskallia.vault.gear.item.VaultGearItem;
-import iskallia.vault.gear.modification.GearModification;
-import iskallia.vault.gear.modification.GearModificationAction;
 import iskallia.vault.init.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,10 +12,10 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tv.alterNERD.VaultModTweaks.integration.ICoinSlots;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Modifies the {@link VaultArtisanStationContainer} to modify the slot placement.
@@ -28,47 +25,13 @@ import java.util.List;
 public abstract class MixinVaultArtisanStationContainer extends OverSizedSlotContainer
 {
     /**
-     * Shadows the {@link List<GearModificationAction>} modificationActions field in the {@link VaultArtisanStationContainer} to be accessed locally.
+     * The constructor for {@link VaultArtisanStationContainer}.
+     * @param windowId Passing through the {@link Integer} windowId argument.
+     * @param playerInventory Passing through the {@link Inventory} playerInventory argument.
      */
-    @Final
-    @Shadow
-    private final List<GearModificationAction> modificationActions = new ArrayList();
-
-    /**
-     * Shadows the {@link VaultArtisanStationTileEntity} tileEntity field in the {@link VaultArtisanStationContainer} to be accessed locally.
-     */
-    @Shadow
-    private final VaultArtisanStationTileEntity tileEntity;
-
-    /**
-     * Shadows the {@link VaultArtisanStationContainer#addModSlot(OverSizedTabSlot, GearModification, boolean)} member in the {@link VaultArtisanStationContainer} to be accessed locally.
-     * @param slot The {@link OverSizedTabSlot} slot argument shadowed.
-     * @param modification The {@link GearModification} modification argument shadowed.
-     * @param rightSide The boolean rightside argument shadowed.
-     */
-    @Shadow
-    private void addModSlot(OverSizedTabSlot slot, GearModification modification, boolean rightSide){}
-
-    /**
-     * A constructor for the mixin to initialise the {@link MixinVaultArtisanStationContainer#tileEntity} and handle the super.
-     * @param tileEntity The tile entity of the artisan station.
-     * @param windowId An ID for a window to be passed to the super.
-     * @param playerInventory The {@link Inventory} of the interacting player to be passed to the super.
-     */
-    public MixinVaultArtisanStationContainer(VaultArtisanStationTileEntity tileEntity, int windowId, Inventory playerInventory)
+    public MixinVaultArtisanStationContainer(int windowId, Inventory playerInventory)
     {
         super(ModContainers.VAULT_ARTISAN_STATION_CONTAINER, windowId, playerInventory.player);
-
-        this.tileEntity = tileEntity;
-    }
-
-    /**
-     * Get the slot for plating.
-     * @return Returns the slot for plating.
-     */
-    public Slot getPlatingSlot()
-    {
-        return this.slots.get(36);
     }
 
     /**
@@ -116,77 +79,172 @@ public abstract class MixinVaultArtisanStationContainer extends OverSizedSlotCon
     }
 
     /**
-     * Overrides the {@link VaultArtisanStationContainer#initSlots(Inventory)} member to add additional slots.
-     * @param playerInventory The {@link Inventory} of the interacting player.
+     * Modifies the argument of the {@link OverSizedTabSlot} used for plating in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param x The {@link Integer} X to modify.
      */
-    private void initSlots(Inventory playerInventory)
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 0), index = 2)
+    int ModifyPlatingSlotX(int x)
+    {
+        return 79;
+    }
+
+    /**
+     * Modifies the argument of the {@link OverSizedTabSlot} used for plating in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param y The {@link Integer} Y to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 0), index = 3)
+    int ModifyPlatingSlotY(int y)
+    {
+        return 60;
+    }
+
+    /**
+     * Modifies the argument of the {@link OverSizedTabSlot} used for bronze in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param x The {@link Integer} X to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 1), index = 2)
+    int ModifyBronzeSlotX(int x)
+    {
+        return 69;
+    }
+
+    /**
+     * Modifies the argument of the {@link OverSizedTabSlot} used for bronze in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param y The {@link Integer} Y to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 1), index = 3)
+    int ModifyBronzeSlotY(int y)
+    {
+        return 20;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge all modifiers in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 2), index = 1)
+    int ModifyReforgeAllModifiersSlot(int index)
+    {
+        return 5;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the add modifier in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 3), index = 1)
+    int ModifyAddModifierSlot(int index)
+    {
+        return 6;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the remove modifier in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 4), index = 1)
+    int ModifyRemoveModifierSlot(int index)
+    {
+        return 7;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge all add tag in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 5), index = 1)
+    int ModifyReforgeAllAddTagSlot(int index)
+    {
+        return 8;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge potential in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 6), index = 1)
+    int ModifyReforgePotentialSlot(int index)
+    {
+        return 9;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge repair slots in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 7), index = 1)
+    int ModifyReforgeRepairSlotsSlot(int index)
+    {
+        return 10;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge all implicits in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 8), index = 1)
+    int ModifyReforgeAllImplicitsSlot(int index)
+    {
+        return 11;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge random tier in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 9), index = 1)
+    int ModifyReforgeRandomTierSlot(int index)
+    {
+        return 12;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge prefixes in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 10), index = 1)
+    int ModifyReforgePrefixesSlot(int index)
+    {
+        return 13;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the reforge suffixes in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param index The {@link Integer} index to modify.
+     */
+    @ModifyArg(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/oversized/OverSizedTabSlot;<init>(Lnet/minecraft/world/Container;III)V", ordinal = 11), index = 1)
+    int ModifyReforgeSuffixesSlot(int index)
+    {
+        return 14;
+    }
+
+    /**
+     * Modifies an argument of the {@link OverSizedTabSlot} used for the gear in the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param y The {@link Integer} Y to modify.
+     */
+    @ModifyConstant(method = "initSlots", constant = @Constant(intValue = 72, ordinal = 0), remap = false)
+    int ModifyGearSlotY(int y)
+    {
+        return 90;
+    }
+
+    /**
+     * Inject new {@link OverSizedTabSlot} slots for silver, gold and platinum coins into the {@link VaultArtisanStationContainer#initSlots(Inventory)} member.
+     * @param callbackInfo  The {@link CallbackInfo} for the injection.
+     * @param invContainer  Passing in the local variable {@link Container} invContainer as an argument.
+     */
+    @Inject(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/VaultArtisanStationContainer;addModSlot(Liskallia/vault/container/oversized/OverSizedTabSlot;Liskallia/vault/gear/modification/GearModification;Z)V", ordinal = 0), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    void InjectAdditionalCoinSlots(Inventory playerInventory, CallbackInfo callbackInfo, Container invContainer)
     {
         VaultArtisanStationContainer vaultArtisanStationContainer = (VaultArtisanStationContainer)(Object)this;
-        int hotbarSlot;
-
-        for(hotbarSlot = 0; hotbarSlot < 3; ++hotbarSlot)
-        {
-            for(int column = 0; column < 9; ++column)
-            {
-                vaultArtisanStationContainer.addSlot(new TabSlot(playerInventory, column + hotbarSlot * 9 + 9, 8 + column * 18, 148 + hotbarSlot * 18));
-            }
-        }
-
-        for(hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
-        {
-            vaultArtisanStationContainer.addSlot(new TabSlot(playerInventory, hotbarSlot, 8 + hotbarSlot * 18, 206));
-        }
-
-        // Modified slot for plating.
-        Container invContainer = tileEntity.getInventory();
-        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 0, 79, 60)).setFilter((stack) ->
-        {
-            return stack.is(ModItems.VAULT_PLATING);
-        }).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.PLATING_NO_ITEM));
-
-        // Modified slot for bronze coins.
-        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 1, 69, 20)).setFilter((stack) ->
-        {
-            return stack.is(ModBlocks.VAULT_BRONZE);
-        }).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
 
         // Added slot for silver coins.
-        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 2, 89, 20)).setFilter((stack) ->
-        {
-            return stack.is(ModBlocks.VAULT_SILVER);
-        }).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
+        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 2, 89, 20)).setFilter((stack) -> stack.is(ModBlocks.VAULT_SILVER)).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
 
         // Added slot for gold coins.
-        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 3, 69, 40)).setFilter((stack) ->
-        {
-            return stack.is(ModBlocks.VAULT_GOLD);
-        }).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
+        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 3, 69, 40)).setFilter((stack) -> stack.is(ModBlocks.VAULT_GOLD)).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
 
         // Added slot for platinum coins.
-        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 4, 89, 40)).setFilter((stack) ->
-        {
-            return stack.is(ModBlocks.VAULT_PLATINUM);
-        }).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
-
-        addModSlot(new OverSizedTabSlot(invContainer, 5, 8, 20), ModGearModifications.REFORGE_ALL_MODIFIERS, true);
-        addModSlot(new OverSizedTabSlot(invContainer, 6, 8, 44), ModGearModifications.ADD_MODIFIER, true);
-        addModSlot(new OverSizedTabSlot(invContainer, 7, 8, 68), ModGearModifications.REMOVE_MODIFIER, true);
-        addModSlot(new OverSizedTabSlot(invContainer, 8, 8, 92), ModGearModifications.REFORGE_ALL_ADD_TAG, true);
-        addModSlot(new OverSizedTabSlot(invContainer, 9, 150, 20), ModGearModifications.RESET_POTENTIAL, false);
-        addModSlot(new OverSizedTabSlot(invContainer, 10, 150, 44), ModGearModifications.REFORGE_REPAIR_SLOTS, false);
-        addModSlot(new OverSizedTabSlot(invContainer, 11, 150, 68), ModGearModifications.REFORGE_ALL_IMPLICITS, false);
-        addModSlot(new OverSizedTabSlot(invContainer, 12, 150, 92), ModGearModifications.REFORGE_RANDOM_TIER, false);
-        addModSlot(new OverSizedTabSlot(invContainer, 13, 8, 116), ModGearModifications.REFORGE_PREFIXES, true);
-        addModSlot(new OverSizedTabSlot(invContainer, 14, 150, 116), ModGearModifications.REFORGE_SUFFIXES, false);
-
-        Container inputContainer = this.tileEntity.getGearInput();
-
-        vaultArtisanStationContainer.addSlot(new TabSlot(inputContainer, 0, 79, 90)
-        {
-            public boolean mayPlace(ItemStack stack)
-            {
-                return stack.getItem() instanceof VaultGearItem && stack.getItem() != ModItems.JEWEL;
-            }
-        });
+        vaultArtisanStationContainer.addSlot((new OverSizedTabSlot(invContainer, 4, 89, 40)).setFilter((stack) -> stack.is(ModBlocks.VAULT_PLATINUM)).setBackground(InventoryMenu.BLOCK_ATLAS, ModSlotIcons.COINS_NO_ITEM));
     }
 }

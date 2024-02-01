@@ -13,6 +13,12 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tv.alterNERD.VaultModTweaks.integration.ICoinSlots;
 
 import java.util.Optional;
@@ -31,14 +37,6 @@ public abstract class MixinGearModificationAction
     private static final Random rand = new Random();
 
     /**
-     * Shadows the VaultArtisanStationContainer#getCorrespondingSlot(VaultArtisanStationContainer) member in the {@link GearModificationAction} to be accessed locally.
-     * @param container The {@link VaultArtisanStationContainer} container argument shadowed.
-     * @return The {@link Slot} return for the shadowed member.
-     */
-    @Shadow
-    public abstract Slot getCorrespondingSlot(VaultArtisanStationContainer container);
-
-    /**
      * Shadows the {@link VaultArtisanStationContainer#getGearInputSlot()} member in the {@link GearModificationAction} to be accessed locally.
      * @return The {@link GearModificationAction} return for the shadowed member.
      */
@@ -46,147 +44,107 @@ public abstract class MixinGearModificationAction
     public abstract GearModification modification();
 
     /**
-     * Overrides the {@link GearModificationAction#apply(VaultArtisanStationContainer, ServerPlayer)} member in the {@link GearModificationAction} to allow silver, gold and platinum coins to be used.
-     * @param container The {@link VaultArtisanStationContainer} to access the coins from.
-     * @param player The {@link ServerPlayer} using the coins.
+     * Removes the bronze shrink to allow it to be replaced entirely with {@link MixinGearModificationAction#InjectSpendCoins(VaultArtisanStationContainer, ServerPlayer, CallbackInfo, ItemStack, VaultGearData, Optional, Slot, ItemStack, ItemStack, GearModificationCost, ItemStack)}
+     * @param instance The {@link ItemStack} instance to be ignored.
+     * @param bronzeCost The {@link Integer} bronzeCost to be ignored.
      */
-    public void apply(VaultArtisanStationContainer container, ServerPlayer player)
-    {
-        if (this.canApply(container, player))
-        {
-            ItemStack gear = container.getGearInputSlot().getItem();
-            VaultGearData data = VaultGearData.read(gear);
-            Optional<Integer> potential = data.getFirstValue(ModGearAttributes.CRAFTING_POTENTIAL);
-
-            if (!potential.isEmpty())
-            {
-                Slot inSlot = this.getCorrespondingSlot(container);
-
-                if (inSlot != null)
-                {
-                    ItemStack input = inSlot.getItem();
-                    ItemStack material = input.copy();
-                    input.shrink(1);
-                    inSlot.set(input);
-                    GearModificationCost cost = GearModificationCost.getCost(data.getRarity(), data.getItemLevel(), (Integer)potential.get(), this.modification());
-                    ItemStack bronze = ((ICoinSlots)container).getBronzeSlot().getItem();
-                    ItemStack silver = ((ICoinSlots)container).getSilverSlot().getItem();
-                    ItemStack gold = ((ICoinSlots)container).getGoldSlot().getItem();
-                    ItemStack platinum = ((ICoinSlots)container).getPlatinumSlot().getItem();
-
-                    int totalBronzeCostRemaining = cost.costBronze();
-
-                    if (totalBronzeCostRemaining - bronze.getCount() <= 0)
-                    {
-                        bronze.shrink(totalBronzeCostRemaining);
-                    }
-
-                    else
-                    {
-                        totalBronzeCostRemaining -= bronze.getCount();
-
-                        if (totalBronzeCostRemaining - (silver.getCount() * 9) <= 0)
-                        {
-                            bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
-                            bronze.setCount(9 - (totalBronzeCostRemaining % 9));
-
-                            silver.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 9)));
-                        }
-
-                        else
-                        {
-                            totalBronzeCostRemaining -= silver.getCount() * 9;
-
-                            if (totalBronzeCostRemaining - (gold.getCount() * 81) <= 0)
-                            {
-                                bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
-                                bronze.setCount(9 - ((totalBronzeCostRemaining % 81) % 9));
-
-                                silver = new ItemStack(ModBlocks.VAULT_SILVER);
-                                silver.setCount((81 - (totalBronzeCostRemaining % 81)) / 9);
-
-                                gold.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 81)));
-                            }
-
-                            else
-                            {
-                                totalBronzeCostRemaining -= gold.getCount() * 81;
-
-                                bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
-                                bronze.setCount(9 - (((totalBronzeCostRemaining % 729) % 81) % 9));
-
-                                silver = new ItemStack(ModBlocks.VAULT_SILVER);
-                                silver.setCount((81 - ((totalBronzeCostRemaining % 729) % 81)) / 9);
-
-                                gold = new ItemStack(ModBlocks.VAULT_GOLD);
-                                gold.setCount((729 - (totalBronzeCostRemaining % 729)) / 81);
-
-                                platinum.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 729)));
-                            }
-                        }
-                    }
-
-                    ((ICoinSlots)container).getBronzeSlot().set(bronze);
-                    ((ICoinSlots)container).getSilverSlot().set(silver);
-                    ((ICoinSlots)container).getGoldSlot().set(gold);
-                    ((ICoinSlots)container).getPlatinumSlot().set(platinum);
-
-                    ItemStack plating = container.getPlatingSlot().getItem();
-                    plating.shrink(cost.costPlating());
-                    container.getPlatingSlot().set(plating);
-                    this.modification().apply(gear, material, player, rand);
-                }
-            }
-        }
-    }
+    @Redirect(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", ordinal = 1))
+    void RemoveBronzeShrink(ItemStack instance, int bronzeCost) {}
 
     /**
-     * Overrides the {@link GearModificationAction#canApply(VaultArtisanStationContainer, Player)} member in the {@link GearModificationAction} to allow silver, gold and platinum coins to be used.
-     * @param container The {@link VaultArtisanStationContainer} to access the coins from.
-     * @param player The {@link ServerPlayer} using the coins.
-     * @return Returns whether the crafting action can be complete.
+     * Injects new method to handle spending of coins, including silver, gold and platinum with bronze for a {@link GearModificationAction}.
+     * @param container Passing in the calling method argument {@link VaultArtisanStationContainer} container as an argument.
+     * @param player Passing in the calling method argument {@link ServerPlayer} player as an argument.
+     * @param callbackInfo The {@link CallbackInfo} for the injection.
+     * @param gear Passing in the local variable {@link ItemStack} gear as an argument.
+     * @param data Passing in the local variable {@link VaultGearData} data as an argument.
+     * @param potential Passing in the local variable {@link Optional} potential as an argument.
+     * @param inSlot Passing in the local variable {@link Slot} inSlot as an argument.
+     * @param input Passing in the local variable {@link ItemStack} input as an argument.
+     * @param material Passing in the local variable {@link ItemStack} material as an argument.
+     * @param cost Passing in the local variable {@link GearModificationCost} cost as an argument.
+     * @param bronze Passing in the local variable {@link ItemStack} bronze as an argument.
      */
-    public boolean canApply(VaultArtisanStationContainer container, Player player)
+    @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", ordinal = 1), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    void InjectSpendCoins(VaultArtisanStationContainer container, ServerPlayer player, CallbackInfo callbackInfo, ItemStack gear, VaultGearData data, Optional potential, Slot inSlot, ItemStack input, ItemStack material, GearModificationCost cost, ItemStack bronze)
     {
-        Slot inSlot = this.getCorrespondingSlot(container);
+        ItemStack silver = ((ICoinSlots)container).getSilverSlot().getItem();
+        ItemStack gold = ((ICoinSlots)container).getGoldSlot().getItem();
+        ItemStack platinum = ((ICoinSlots)container).getPlatinumSlot().getItem();
 
-        if (inSlot == null)
+        int totalBronzeCostRemaining = cost.costBronze();
+
+        if (totalBronzeCostRemaining - bronze.getCount() <= 0)
         {
-            return false;
+            bronze.shrink(totalBronzeCostRemaining);
         }
 
         else
         {
-            ItemStack gear = container.getGearInputSlot().getItem();
-            ItemStack in = inSlot.getItem();
+            totalBronzeCostRemaining -= bronze.getCount();
 
-            if (!in.isEmpty() && !gear.isEmpty())
+            if (totalBronzeCostRemaining - (silver.getCount() * 9) <= 0)
             {
-                VaultGearData data = VaultGearData.read(gear);
-                Optional<Integer> potential = data.getFirstValue(ModGearAttributes.CRAFTING_POTENTIAL);
+                bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
+                bronze.setCount(9 - (totalBronzeCostRemaining % 9));
 
-                if (potential.isEmpty())
-                {
-                    return false;
-                }
-
-                else
-                {
-                    GearModificationCost cost = GearModificationCost.getCost(data.getRarity(), data.getItemLevel(), (Integer)potential.get(), this.modification());
-                    ItemStack bronze = ((ICoinSlots)container).getBronzeSlot().getItem();
-                    ItemStack silver = ((ICoinSlots)container).getSilverSlot().getItem();
-                    ItemStack gold = ((ICoinSlots)container).getGoldSlot().getItem();
-                    ItemStack platinum = ((ICoinSlots)container).getPlatinumSlot().getItem();
-                    ItemStack plating = container.getPlatingSlot().getItem();
-
-                    return plating.getCount() >= cost.costPlating() && (bronze.getCount() + (silver.getCount() * 9) + (gold.getCount() * 81) + (platinum.getCount() * 729) >= cost.costBronze()) && this.modification().canApply(gear, in, player, rand);
-                }
+                silver.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 9)));
             }
 
             else
             {
-                return false;
+                totalBronzeCostRemaining -= silver.getCount() * 9;
+
+                if (totalBronzeCostRemaining - (gold.getCount() * 81) <= 0)
+                {
+                    bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
+                    bronze.setCount(9 - ((totalBronzeCostRemaining % 81) % 9));
+
+                    silver = new ItemStack(ModBlocks.VAULT_SILVER);
+                    silver.setCount((81 - (totalBronzeCostRemaining % 81)) / 9);
+
+                    gold.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 81)));
+                }
+
+                else
+                {
+                    totalBronzeCostRemaining -= gold.getCount() * 81;
+
+                    bronze = new ItemStack(ModBlocks.VAULT_BRONZE);
+                    bronze.setCount(9 - (((totalBronzeCostRemaining % 729) % 81) % 9));
+
+                    silver = new ItemStack(ModBlocks.VAULT_SILVER);
+                    silver.setCount((81 - ((totalBronzeCostRemaining % 729) % 81)) / 9);
+
+                    gold = new ItemStack(ModBlocks.VAULT_GOLD);
+                    gold.setCount((729 - (totalBronzeCostRemaining % 729)) / 81);
+
+                    platinum.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 729)));
+                }
             }
         }
+
+        ((ICoinSlots)container).getSilverSlot().set(silver);
+        ((ICoinSlots)container).getGoldSlot().set(gold);
+        ((ICoinSlots)container).getPlatinumSlot().set(platinum);
+    }
+
+    /**
+     *
+     * @param container Passing in the calling method argument {@link VaultArtisanStationContainer} container as an argument.
+     * @param player Passing in the calling method argument {@link ServerPlayer} player as an argument.
+     * @param callbackInfoReturnable The {@link CallbackInfoReturnable} for the injection and return.
+     * @param inSlot Passing in the local variable {@link Slot} inSlot as an argument.
+     * @param gear Passing in the local variable {@link ItemStack} gear as an argument.
+     * @param in Passing in the local variable {@link ItemStack} in as an argument.
+     */
+    @Inject(method = "canApply", at = @At(value = "RETURN", ordinal = 2), cancellable = true, remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    void InjectCanSpendCoins(VaultArtisanStationContainer container, Player player, CallbackInfoReturnable<Boolean> callbackInfoReturnable, Slot inSlot, ItemStack gear, ItemStack in)
+    {
+        VaultGearData data = VaultGearData.read(gear);
+        Optional<Integer> potential = data.getFirstValue(ModGearAttributes.CRAFTING_POTENTIAL);
+        GearModificationCost cost = GearModificationCost.getCost(data.getRarity(), data.getItemLevel(), potential.orElse(0), this.modification());
+
+        callbackInfoReturnable.setReturnValue(container.getPlatingSlot().getItem().getCount() >= cost.costPlating() && (((ICoinSlots)container).getBronzeSlot().getItem().getCount() + (((ICoinSlots)container).getSilverSlot().getItem().getCount() * 9) + (((ICoinSlots)container).getGoldSlot().getItem().getCount() * 81) + (((ICoinSlots)container).getPlatinumSlot().getItem().getCount() * 729) >= cost.costBronze()) && this.modification().canApply(gear, in, player, rand));
     }
 }
