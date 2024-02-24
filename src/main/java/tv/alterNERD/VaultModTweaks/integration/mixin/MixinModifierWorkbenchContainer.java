@@ -190,7 +190,7 @@ public abstract class MixinModifierWorkbenchContainer extends AbstractElementCon
             }
         }
 
-        for (int i = reverseDirection ? endIndex - 1 : startIndex; i < (reverseDirection ? startIndex : endIndex - 1); i += (reverseDirection ? -1 : 1))
+        for (int i = reverseDirection ? endIndex : startIndex; reverseDirection ? i > startIndex : i < endIndex; i += (reverseDirection ? -1 : 1))
         {
             if (sourceStack.isEmpty())
             {
