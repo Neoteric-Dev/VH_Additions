@@ -12,6 +12,8 @@
     "MixinGearModificationAction",
     "MixinJewelExpertise",
     "MixinModificationButtonElement",
+    "MixinModifierWorkbenchContainer",
+    "MixinModifierWorkbenchCraftMessage",
     "MixinModifierWorkbenchTileEntity",
     "MixinPlayerResearchesData",
     "MixinStageManager",
@@ -27,7 +29,9 @@
     "MixinVaultJewelCuttingConfig",
     "MixinVaultPortalConfig"
   ],
-  "client": [],
+  "client": [
+    "MixinModifierWorkbenchScreen"
+  ],
   "server": [],
   "minVersion": "0.8"
 }

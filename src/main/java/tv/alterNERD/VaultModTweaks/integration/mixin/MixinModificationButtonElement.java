@@ -5,6 +5,7 @@ import iskallia.vault.client.gui.framework.element.ModificationButtonElement;
 import iskallia.vault.client.gui.framework.render.Tooltips;
 import iskallia.vault.client.gui.framework.spatial.spi.IPosition;
 import iskallia.vault.container.VaultArtisanStationContainer;
+import iskallia.vault.gear.attribute.type.VaultGearAttributeTypeMerger;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.modification.GearModification;
@@ -35,41 +36,54 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Modifies the {@link ModificationButtonElement} to change the display of the tooltip to include the Bronze value of the Silver, Gold and Platinum Coins.
+ */
 @Mixin (ModificationButtonElement.class)
 public abstract class MixinModificationButtonElement extends ButtonElement
 {
+    //region Shadow Fields
+
     /**
-     * Shadow in the {@link Random} random field in the {@link ModificationButtonElement}.
+     * Shadow in the {@link Random} random field to be access locally.
      */
     @Shadow
     private static final Random rand = new Random();
 
+    //endregion
+
+    //region Initialisation
+
     /**
      * The constructor for the {@link MixinModificationButtonElement}.
-     * @param position Passing through the {@link IPosition} position argument.
-     * @param textures Passing through the {@link ButtonTextures} textures argument.
-     * @param onClick Passing through the {@link Runnable} onClick argument.
+     * @param position Passing through the {@link IPosition} position as an argument.
+     * @param textures Passing through the {@link ButtonTextures} textures as an argument.
+     * @param onClick Passing through the {@link Runnable} onClick as an argument.
      */
     public MixinModificationButtonElement(IPosition position, ButtonTextures textures, Runnable onClick)
     {
         super(position, textures, onClick);
     }
 
+    //endregion
+
+    //region Mixins
+
     /**
-     * Modifies the tooltip in the {@link ModificationButtonElement#ModificationButtonElement(IPosition, Runnable, VaultArtisanStationContainer, GearModification)} (right after the tooltip is set).
+     * Modifies the tooltip in the {@link ModificationButtonElement#ModificationButtonElement(IPosition, Runnable, VaultArtisanStationContainer, GearModification)} member (right after the tooltip is set).
      * This is a nasty hack that is entirely necessary as the target class has all the code in the constructor, and it is all in a lambda.
      * The lesson is, move complex initialisation to a separate method, and do not use lambdas in complex initialisations.
      * I am not going to move this into methods like I suggest to above as it will not improve the code for anyone else.
-     * @param position Passing through the {@link IPosition} position argument.
-     * @param onClick Passing through the {@link Runnable} onClick argument.
-     * @param container Passing through the {@link VaultArtisanStationContainer} container argument.
-     * @param modification Passing through the {@link GearModification} modification argument.
-     * @param callbackInfo The {@link CallbackInfo} for the injection.
+     * @param position Passing through the {@link IPosition} position as an argument.
+     * @param onClick Passing through the {@link Runnable} onClick as an argument.
+     * @param container Passing through the {@link VaultArtisanStationContainer} container as an argument.
+     * @param modification Passing through the {@link GearModification} modification as an argument.
+     * @param callbackInformation The {@link CallbackInfo} for the injection.
      */
     @Inject(method = "<init>", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    void ModifyTooltip(IPosition position, Runnable onClick, VaultArtisanStationContainer container, GearModification modification, CallbackInfo callbackInfo)
+    void ModifyTooltip(IPosition position, Runnable onClick, VaultArtisanStationContainer container, GearModification modification, CallbackInfo callbackInformation)
     {
-        this.tooltip(Tooltips.multi(() ->
+        tooltip(Tooltips.multi(() ->
         {
             GearModificationAction action = container.getModificationAction(modification);
 
@@ -131,7 +145,8 @@ public abstract class MixinModificationButtonElement extends ButtonElement
                         if (!failedModification && !inputItem.isEmpty())
                         {
                             VaultGearData data = VaultGearData.read(gearStack);
-                            GearModificationCost cost = GearModificationCost.getCost(data.getRarity(), data.getItemLevel(), potential, modification);
+                            String rollType = data.get(ModGearAttributes.GEAR_ROLL_TYPE, VaultGearAttributeTypeMerger.firstNonNull());
+                            GearModificationCost cost = GearModificationCost.getCost(data.getRarity(), rollType, data.getItemLevel(), potential, modification);
                             ItemStack plating = container.getPlatingSlot().getItem();
                             int bronzeTotal = ((ICoinSlots)container).getBronzeSlot().getItem().getCount() + (((ICoinSlots)container).getSilverSlot().getItem().getCount() * 9) + (((ICoinSlots)container).getGoldSlot().getItem().getCount() * 81) + (((ICoinSlots)container).getPlatinumSlot().getItem().getCount() * 729);
                             MutableComponent var10001 = (new TextComponent("- ")).append((new ItemStack(ModItems.VAULT_PLATING)).getHoverName());
@@ -157,4 +172,6 @@ public abstract class MixinModificationButtonElement extends ButtonElement
             }
         }));
     }
+
+    //endregion
 }

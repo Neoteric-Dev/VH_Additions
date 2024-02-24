@@ -3,31 +3,35 @@ package tv.alterNERD.VaultModTweaks.integration;
 import net.minecraft.world.inventory.Slot;
 
 /**
- * Add methods to retrieve the silver, gold and platinum slots.
+ * Add methods to retrieve the Bronze, Silver, Gold and Platinum slots.
  */
 public interface ICoinSlots
 {
-    /**
-     * Get the bronze slot.
-     * @return Returns the bronze slot.
-     */
-    public Slot getBronzeSlot();
+    //region Getters
 
     /**
-     * Get the silver slot.
-     * @return Returns the silver slot.
+     * Get the Bronze slot.
+     * @return Returns the Bronze slot.
      */
-    public Slot getSilverSlot();
+    Slot getBronzeSlot();
 
     /**
-     * Get the gold slot.
-     * @return Returns the silver slot.
+     * Get the Silver slot.
+     * @return Returns the Silver slot.
      */
-    public Slot getGoldSlot();
+    Slot getSilverSlot();
 
     /**
-     * Get the platinum slot.
-     * @return Returns the silver slot.
+     * Get the Gold slot.
+     * @return Returns the Gold slot.
      */
-    public Slot getPlatinumSlot();
+    Slot getGoldSlot();
+
+    /**
+     * Get the Platinum slot.
+     * @return Returns the Platinum slot.
+     */
+    Slot getPlatinumSlot();
+
+    //endregion
 }
