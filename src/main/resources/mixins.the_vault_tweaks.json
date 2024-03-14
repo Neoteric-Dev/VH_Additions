@@ -12,25 +12,32 @@
     "MixinGearModificationAction",
     "MixinJewelExpertise",
     "MixinModificationButtonElement",
+    "MixinModifierWorkbenchBlock",
     "MixinModifierWorkbenchContainer",
     "MixinModifierWorkbenchCraftMessage",
     "MixinModifierWorkbenchTileEntity",
     "MixinPlayerResearchesData",
     "MixinStageManager",
     "MixinToolType",
+    "MixinTransmogButtonMessage",
     "MixinTransmogTableBlock",
+    "MixinTransmogTableContainer",
+    "MixinTransmogTableInventory",
     "MixinUnidentifiedRelicFragmentsConfig",
     "MixinVaultAltarBlock",
     "MixinVaultAltarConfig",
     "MixinVaultArtisanStationContainer",
     "MixinVaultArtisanStationTileEntity",
+    "MixinVaultAxeItem",
     "MixinVaultCharmConfig",
     "MixinVaultGearEnchantmentConfig",
     "MixinVaultJewelCuttingConfig",
-    "MixinVaultPortalConfig"
+    "MixinVaultPortalConfig",
+    "MixinWandItem"
   ],
   "client": [
-    "MixinModifierWorkbenchScreen"
+    "MixinModifierWorkbenchScreen",
+    "MixinTransmogTableScreen"
   ],
   "server": [],
   "minVersion": "0.8"

@@ -9,6 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Additional helper methods for similar to the helper methods found in {@link InventoryUtil}.
+ */
 public final class ExtendedInventoryUtils
 {
     //region Helpers

@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Implements;
+import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +19,8 @@ import tv.alterNERD.VaultModTweaks.integration.IOverSizedInventory;
  * Modifies the {@link ModifierWorkbenchTileEntity} to add slots for Vault Gold, Nullifying Focus and Amplifying Focus.
  */
 @Mixin(ModifierWorkbenchTileEntity.class)
-public abstract class MixinModifierWorkbenchTileEntity extends BlockEntity implements IOverSizedInventory
+@Implements(@Interface(iface = IOverSizedInventory.class, prefix = "overSizedInventory$"))
+public abstract class MixinModifierWorkbenchTileEntity extends BlockEntity
 {
     //region Shadow Fields
 
@@ -35,7 +38,7 @@ public abstract class MixinModifierWorkbenchTileEntity extends BlockEntity imple
      * Gets the {@link OverSizedInventory} from the {@link ModifierWorkbenchTileEntity}.
      * @return Returns the {@link OverSizedInventory}.
      */
-    public OverSizedInventory getOverSizedInventory()
+    public OverSizedInventory overSizedInventory$getOverSizedInventory()
     {
         return overSizedInventory;
     }

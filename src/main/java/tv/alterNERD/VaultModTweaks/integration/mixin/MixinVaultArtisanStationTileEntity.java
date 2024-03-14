@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.*;
 
 /**
- * Modifies the {@link VaultArtisanStationTileEntity} class to allow Silver, Gold and Platinum Coins to be used in the Vault Artisan Station.
+ * Modifies the {@link VaultArtisanStationTileEntity} to allow Vault Silver, Gold and Platinum to be used in the Vault Artisan Station.
  */
 @Mixin(VaultArtisanStationTileEntity.class)
 public abstract class MixinVaultArtisanStationTileEntity extends BlockEntity
@@ -18,7 +18,7 @@ public abstract class MixinVaultArtisanStationTileEntity extends BlockEntity
 
     /**
      * Shadows the {@link OverSizedInventory} inventory field in the {@link VaultArtisanStationTileEntity} to give it '15' inventory spaces instead of the default '12'.
-     * This will allow Silver, Gold and Platinum coins to have slots available.
+     * This will allow Vault Silver, Gold and Platinum to have slots available.
      */
     @Shadow
     private final OverSizedInventory inventory = new OverSizedInventory(15, this);

@@ -49,7 +49,13 @@ import java.util.function.Supplier;
  */
 public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCraftSelectorElement<E, V>, V extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<V>> extends ScrollableListSelectorElement<E, VaultGearWorkbenchConfig.CraftableModifierConfig, V>
 {
+    //region Fields
+
     final ObservableSupplier<ItemStack> inputSupplier;
+
+    //endregion
+
+    //region Initialisation
 
     public ExtendedWorkbenchCraftSelectorElement(ISpatial spatial, ObservableSupplier<ItemStack> inputSupplier, Supplier<String> searchFilter, IOverSizedInventory overSizedInventory)
     {
@@ -57,6 +63,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
 
         this.inputSupplier = inputSupplier;
     }
+
+    //endregion
+
+    //region Methods
 
     public void onSelect(Consumer<ModifierWorkbenchHelper.CraftingOption> fn)
     {
@@ -84,8 +94,12 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
         this.inputSupplier.ifChanged((change) -> this.refreshElements());
     }
 
+    //endregion
+
     public static class ExtendedWorkbenchCraftSelectorModel<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>> extends ScrollableListSelectorElement.SelectorModel<E, VaultGearWorkbenchConfig.CraftableModifierConfig>
     {
+        //region Fields
+
         final ObservableSupplier<ItemStack> inputSupplier;
         final Supplier<String> searchFilter;
 
@@ -94,12 +108,20 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
          */
         IOverSizedInventory overSizedInventory;
 
+        //endregion
+
+        //region Initialisation
+
         public ExtendedWorkbenchCraftSelectorModel(ObservableSupplier<ItemStack> inputSupplier, Supplier<String> searchFilter, IOverSizedInventory overSizedInventory)
         {
             this.inputSupplier = inputSupplier;
             this.searchFilter = searchFilter;
             this.overSizedInventory = overSizedInventory;
         }
+
+        //endregion
+
+        //region Methods
 
         public List<VaultGearWorkbenchConfig.CraftableModifierConfig> getEntries()
         {
@@ -175,14 +197,22 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
                 return new ModifierWorkbenchHelper.CraftingOption(null);
             }
         }
+
+        //endregion
     }
 
     public static class ExtendedWorkbenchCraftElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchCraftElement<E>> extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>
     {
+        //region Fields
+
         final ItemStack gearStack;
         final VaultGearWorkbenchConfig.CraftableModifierConfig modifier;
         final LabelTextStyle textStyle;
         final VaultGearModifier<?> displayModifier;
+
+        //endregion
+
+        //region Initialisation
 
         public ExtendedWorkbenchCraftElement(IPosition position, ItemStack gearStack, VaultGearWorkbenchConfig.CraftableModifierConfig modifier, IOverSizedInventory overSizedInventory)
         {
@@ -260,6 +290,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
             });
         }
 
+        //endregion
+
+        //region Methods
+
         public VaultGearWorkbenchConfig.CraftableModifierConfig getModifier()
         {
             return this.modifier;
@@ -324,12 +358,20 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
             Player player = Minecraft.getInstance().player;
             return player != null && !this.gearStack.isEmpty() && this.modifier.hasPrerequisites(player) && VaultGearData.read(this.gearStack).getItemLevel() >= this.modifier.getMinLevel() && !this.hasGroupApplied() && this.hasAffixSpace();
         }
+
+        //endregion
     }
 
     public static class ExtendedWorkbenchRemoveCraftElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchRemoveCraftElement<E>> extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>
     {
+        //region Fields
+
         final ItemStack gearStack;
         final LabelTextStyle textStyle;
+
+        //endregion
+
+        //region Initialisation
 
         public ExtendedWorkbenchRemoveCraftElement(IPosition position, ItemStack gearStack, IOverSizedInventory overSizedInventory)
         {
@@ -360,6 +402,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
             });
         }
 
+        //endregion
+
+        //region Methods
+
         public void render(IElementRenderer renderer, @NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             this.setDisabled(!this.canCraft());
@@ -381,10 +427,14 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
         {
             return !this.gearStack.isEmpty() && ModifierWorkbenchHelper.hasCraftedModifier(this.gearStack);
         }
+
+        //endregion
     }
 
     public abstract static class ExtendedWorkbenchListElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>> extends SelectableButtonElement<E>
     {
+        //region Fields
+
         List<ItemStack> inputs;
 
         /**
@@ -393,12 +443,20 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
          */
         IOverSizedInventory overSizedInventory;
 
+        //endregion
+
+        //region Initialisation
+
         public ExtendedWorkbenchListElement(IPosition position, IOverSizedInventory overSizedInventory)
         {
             super(position, ScreenTextures.BUTTON_WORKBENCH_MODIFIER_TEXTURES, () -> {});
 
             this.overSizedInventory = overSizedInventory;
         }
+
+        //endregion
+
+        //region Methods
 
         public void render(IElementRenderer renderer, @NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
@@ -448,5 +506,7 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
         }
 
         protected abstract List<ItemStack> createNeededInputs();
+
+        //endregion
     }
 }

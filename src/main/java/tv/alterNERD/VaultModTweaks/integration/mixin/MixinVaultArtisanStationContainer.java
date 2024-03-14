@@ -259,7 +259,7 @@ public abstract class MixinVaultArtisanStationContainer extends OverSizedSlotCon
      * @param callbackInformation The {@link CallbackInfo} for the injection.
      * @param invContainer Passing in the local variable {@link Container} invContainer as an argument.
      */
-    @Inject(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/VaultArtisanStationContainer;addModSlot(Liskallia/vault/container/oversized/OverSizedTabSlot;Liskallia/vault/gear/modification/GearModification;Z)V", ordinal = 0), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "initSlots", at = @At(value = "INVOKE", target = "Liskallia/vault/container/VaultArtisanStationContainer;addModSlot(Liskallia/vault/container/oversized/OverSizedTabSlot;Liskallia/vault/gear/modification/GearModification;Z)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     void InjectAdditionalCoinSlots(Inventory playerInventory, CallbackInfo callbackInformation, Container invContainer)
     {
         // Added slot for Silver Coins.

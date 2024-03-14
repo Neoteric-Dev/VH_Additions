@@ -76,7 +76,7 @@ public abstract class MixinGearModificationAction
      * @param cost Passing in the local variable {@link GearModificationCost} cost as an argument.
      * @param bronze Passing in the local variable {@link ItemStack} bronze as an argument.
      */
-    @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", ordinal = 1), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     void InjectSpendCoins(VaultArtisanStationContainer container, ServerPlayer player, CallbackInfo callbackInformation, ItemStack gear, VaultGearData data, Optional potential, Slot inSlot, ItemStack input, ItemStack material, String rollType, GearModificationCost cost, ItemStack bronze)
     {
         ItemStack silver = ((ICoinSlots)container).getSilverSlot().getItem();
@@ -149,7 +149,7 @@ public abstract class MixinGearModificationAction
      * @param gear Passing in the local variable {@link ItemStack} gear as an argument.
      * @param in Passing in the local variable {@link ItemStack} in as an argument.
      */
-    @Inject(method = "canApply", at = @At(value = "RETURN", ordinal = 2), cancellable = true, remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "canApply", at = @At(value = "RETURN", ordinal = 2), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     void InjectCanSpendCoins(VaultArtisanStationContainer container, Player player, CallbackInfoReturnable<Boolean> callbackInformationReturnable, Slot inSlot, ItemStack gear, ItemStack in)
     {
         VaultGearData data = VaultGearData.read(gear);

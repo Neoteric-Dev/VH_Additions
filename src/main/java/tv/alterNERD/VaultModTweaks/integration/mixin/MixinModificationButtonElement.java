@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Modifies the {@link ModificationButtonElement} to change the display of the tooltip to include the Bronze value of the Silver, Gold and Platinum Coins.
+ * Modifies the {@link ModificationButtonElement} to change the display of the tooltip to include the Vault Bronze value of the Vault Silver, Gold and Platinum Coins.
  */
 @Mixin (ModificationButtonElement.class)
 public abstract class MixinModificationButtonElement extends ButtonElement
@@ -45,7 +45,7 @@ public abstract class MixinModificationButtonElement extends ButtonElement
     //region Shadow Fields
 
     /**
-     * Shadow in the {@link Random} random field to be access locally.
+     * Shadow in the {@link Random} rand field from the {@link ModificationButtonElement}.
      */
     @Shadow
     private static final Random rand = new Random();
