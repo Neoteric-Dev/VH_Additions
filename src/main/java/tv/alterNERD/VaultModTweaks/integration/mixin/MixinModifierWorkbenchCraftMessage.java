@@ -27,7 +27,6 @@ import tv.alterNERD.VaultModTweaks.integration.ExtendedInventoryUtils;
 import tv.alterNERD.VaultModTweaks.integration.IOverSizedInventory;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
