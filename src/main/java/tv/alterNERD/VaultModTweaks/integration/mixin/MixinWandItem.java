@@ -81,7 +81,7 @@ public abstract class MixinWandItem extends BasicItem
     {
         stack.hurtAndBreak(1, attacker, (targetEntity) -> targetEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         target.hurt(DamageSource.MAGIC, VaultGearData.read(stack).get(ModGearAttributes.ABILITY_POWER, VaultGearAttributeTypeMerger.floatSum()));
-        
+
         return true;
     }
 
