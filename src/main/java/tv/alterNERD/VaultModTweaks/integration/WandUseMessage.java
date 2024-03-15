@@ -11,17 +11,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * A message to send to the server when a wand attack is successful.
- * Successful refers to it NOT hitting a block, rather than hitting an entity.
+ * A message to send to the server when a wand is used.
  */
-public class WandAttackSuccessMessage
+public class WandUseMessage
 {
     //region Initialisation
 
     /**
-     * A constructor for the {@link WandAttackSuccessMessage}.
+     * A constructor for the {@link WandUseMessage}.
      */
-    public WandAttackSuccessMessage() {}
+    public WandUseMessage() {}
 
     //endregion
 
@@ -37,9 +36,9 @@ public class WandAttackSuccessMessage
      * Decodes the message from a {@link FriendlyByteBuf} buffer.
      * @param buffer The container for the encoded message.
      */
-    public static WandAttackSuccessMessage Decode(FriendlyByteBuf buffer)
+    public static WandUseMessage Decode(FriendlyByteBuf buffer)
     {
-        return new WandAttackSuccessMessage();
+        return new WandUseMessage();
     }
 
     /**
@@ -55,7 +54,7 @@ public class WandAttackSuccessMessage
 
             if (player != null)
             {
-                Mana.decrease(player, VaultGearData.read(player.getMainHandItem()).get(ModGearAttributes.ABILITY_POWER, VaultGearAttributeTypeMerger.floatSum()));
+                Mana.decrease(player, VaultGearData.read(player.getMainHandItem()).get(AdditionGearAttributes.MANA_COST, VaultGearAttributeTypeMerger.floatSum()));
 
                 contextSupplier.get().setPacketHandled(true);
 

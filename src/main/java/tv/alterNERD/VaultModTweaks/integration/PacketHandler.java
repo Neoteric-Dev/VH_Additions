@@ -28,7 +28,7 @@ public final class PacketHandler
      */
     public static void Register()
     {
-        Instance.messageBuilder(WandAttackSuccessMessage.class, NetworkDirection.PLAY_TO_SERVER.ordinal()).encoder(WandAttackSuccessMessage::Encode).decoder(WandAttackSuccessMessage::Decode).consumer(WandAttackSuccessMessage::Handle).add();
+        Instance.messageBuilder(WandUseMessage.class, NetworkDirection.PLAY_TO_SERVER.ordinal()).encoder(WandUseMessage::Encode).decoder(WandUseMessage::Decode).consumer(WandUseMessage::Handle).add();
     }
 
     //endregion
