@@ -17,6 +17,7 @@
  */
 package tv.alterNERD.VaultModTweaks;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -31,7 +32,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import iskallia.vault.init.ModConfigs;
+import tv.alterNERD.VaultModTweaks.integration.PacketHandler;
 import tv.alterNERD.VaultModTweaks.integration.TagManager;
+import tv.alterNERD.VaultModTweaks.integration.mixin.MixinWandItem;
 import tv.alterNERD.VaultModTweaks.util.I18n;
 
 @Mod("the_vault_tweaks")
@@ -44,12 +47,19 @@ public class VaultModTweaks
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::gatherData);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configLoaded);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::SetupPacketHandler);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Configuration.CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configuration.CLIENTCONFIG);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         LOGGER.info("Vault Mod Tweaks by alterNERDtive");
+    }
+
+    @SubscribeEvent
+    public void SetupPacketHandler(FMLCommonSetupEvent event)
+    {
+        event.enqueueWork(PacketHandler::Register);
     }
 
     private void gatherData(final GatherDataEvent event) {

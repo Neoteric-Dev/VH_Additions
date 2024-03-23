@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 public abstract class MixinToolType {
     /**
      * Accessor mixin for the
-     * {@link iskallia.vault.item.tool.ToolType.PACKED_TO_TYPE} variable.
+     * {@link iskallia.vault.item.tool.ToolType} variable.
      * 
      * @return nothing; this should never be actually called
      */

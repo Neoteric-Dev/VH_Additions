@@ -48,7 +48,7 @@ public abstract class MixinStageManager {
         method = "onItemCrafted",
         at = @At(
             value = "INVOKE",
-            target = "getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
+            target = "Liskallia/vault/research/StageManager;getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
             remap = false
         ),
         remap = false
@@ -61,7 +61,7 @@ public abstract class MixinStageManager {
         method = "onBlockInteraction",
         at = @At(
             value = "INVOKE",
-            target = "getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
+            target = "Liskallia/vault/research/StageManager;getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
             remap = false
         ),
         remap = false
@@ -74,7 +74,7 @@ public abstract class MixinStageManager {
         method = "onItemUse",
         at = @At(
             value = "INVOKE",
-            target = "getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
+            target = "Liskallia/vault/research/StageManager;getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
             remap = false
         ),
         remap = false
@@ -87,7 +87,7 @@ public abstract class MixinStageManager {
         method = "onEntityInteraction",
         at = @At(
             value = "INVOKE",
-            target = "getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
+            target = "Liskallia/vault/research/StageManager;getResearchTree(Lnet/minecraft/world/entity/player/Player;)Liskallia/vault/research/ResearchTree;",
             remap = false
         ),
         remap = false
