@@ -20,6 +20,7 @@ public abstract class MixinVaultArtisanStationTileEntity extends BlockEntity
      * Shadows the {@link OverSizedInventory} inventory field in the {@link VaultArtisanStationTileEntity} to give it '15' inventory spaces instead of the default '12'.
      * This will allow Vault Silver, Gold and Platinum to have slots available.
      */
+    @Final
     @Shadow
     private final OverSizedInventory inventory = new OverSizedInventory(15, this);
 

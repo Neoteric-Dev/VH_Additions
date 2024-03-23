@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Adds additional {@link VaultGearAttribute} Vault Gear Attributes.
  */
-public final class AdditionGearAttributes
+public final class AdditionalGearAttributes
 {
     //region Fields
 
@@ -28,7 +28,17 @@ public final class AdditionGearAttributes
     /**
      * An attribute for determining the damage dealt by a Wand.
      */
-    public final static VaultGearAttribute<Float> MAGIC_POWER = CreateAttribute("wand_magic_power", VaultGearAttributeType.floatType(), ModGearAttributeGenerators.floatRange(), ModGearAttributeReaders.addedDecimalReader("Ability Power Percentage", 6762925), VaultGearAttributeComparator.floatComparator());
+    public final static VaultGearAttribute<Float> MAGIC_POWER = CreateAttribute("wand_magic_power", VaultGearAttributeType.floatType(), ModGearAttributeGenerators.floatRange(), ModGearAttributeReaders.percentageReader("Ability Power To Damage", 6762925), VaultGearAttributeComparator.floatComparator());
+
+    /**
+     * An attribute for determining the reload time to use a Crossbow.
+     */
+    public final static VaultGearAttribute<Float> RELOAD_TIME = CreateAttribute("crossbow_reload_time", VaultGearAttributeType.floatType(), ModGearAttributeGenerators.floatRange(), ModGearAttributeReaders.addedDecimalReader("Reload Time", 3319890), VaultGearAttributeComparator.floatComparator());
+
+    /**
+     * An attribute for determining the projectile range when firing a Crossbow.
+     */
+    public final static VaultGearAttribute<Integer> PROJECTILE_RANGE = CreateAttribute("crossbow_projectile_range", VaultGearAttributeType.intType(), ModGearAttributeGenerators.intRange(), ModGearAttributeReaders.addedIntReader("Projectile Range", 13394625), VaultGearAttributeComparator.intComparator());
 
     //endregion
 
@@ -38,12 +48,14 @@ public final class AdditionGearAttributes
      * Initialises the {@link VaultGearAttribute} Vault Gear Attributes.
      * @param event The {@link RegistryEvent} registry event for registering the {@link VaultGearAttribute} Vault Gear Attributes.
      */
-    public static void Initialise(RegistryEvent.Register<VaultGearAttribute<?>> event)
+    public static void RegisterAttributes(RegistryEvent.Register<VaultGearAttribute<?>> event)
     {
         IForgeRegistry<VaultGearAttribute<?>> registry = event.getRegistry();
 
         registry.register(MANA_COST);
         registry.register(MAGIC_POWER);
+        registry.register(RELOAD_TIME);
+        registry.register(PROJECTILE_RANGE);
     }
 
     //endregion
@@ -78,7 +90,7 @@ public final class AdditionGearAttributes
      */
     private static <T> VaultGearAttribute<T> CreateAttribute(String name, VaultGearAttributeType<T> type, ConfigurableAttributeGenerator<T, ?> generator, VaultGearModifierReader<T> reader, @Nullable VaultGearAttributeComparator<T> comparator)
     {
-        return new VaultGearAttribute(VaultMod.id(name), type, generator, reader, comparator);
+        return new VaultGearAttribute<>(VaultMod.id(name), type, generator, reader, comparator);
     }
 
     //endregion

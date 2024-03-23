@@ -38,18 +38,6 @@ public abstract class MixinTransmogTableScreen extends AbstractElementContainerS
 
     //region Mixins
 
-    ///**
-    // * Modifies the 'Y' position of the {@link NineSliceElement} when creating the {@link TransmogTableScreen} screen.
-    // * @param spatial Passing through the {@link ISpatial} spatial as an argument.
-    // * @param textureRegion Passing through the {@link NineSlice.TextureRegion} textureRegion as an argument.
-    // * @return Returns the modified {@link NineSliceElement}.
-    // */
-    //@Redirect(method = "<init>", at = @At(value = "NEW", target = "(Liskallia/vault/client/gui/framework/spatial/spi/ISpatial;Liskallia/vault/client/gui/framework/render/NineSlice$TextureRegion;)Liskallia/vault/client/gui/framework/element/NineSliceElement;"))
-    //NineSliceElement ModifyNineSliceYPosition(ISpatial spatial, NineSlice.TextureRegion textureRegion)
-    //{
-    //    return new NineSliceElement(Spatials.positionXY(0, -33).size(0, 10), textureRegion);
-    //}
-
     /**
      * Modifies the height of the {@link NineSliceElement} when creating the {@link TransmogTableScreen} screen.
      * @param height Passing through the {@link Integer} height as an argument.

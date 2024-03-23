@@ -1,12 +1,12 @@
 package tv.alterNERD.VaultModTweaks.integration.mixin;
 
-import iskallia.vault.core.event.common.EntityDamageEvent;
 import iskallia.vault.gear.attribute.type.VaultGearAttributeTypeMerger;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModGearAttributes;
 import iskallia.vault.init.ModParticles;
 import iskallia.vault.item.BasicItem;
 import iskallia.vault.item.gear.WandItem;
+import iskallia.vault.util.calc.AbilityPowerHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tv.alterNERD.VaultModTweaks.integration.AdditionGearAttributes;
+import tv.alterNERD.VaultModTweaks.integration.AdditionalGearAttributes;
 import tv.alterNERD.VaultModTweaks.integration.PacketHandler;
 import tv.alterNERD.VaultModTweaks.integration.WandUseMessage;
 
@@ -51,10 +51,10 @@ public abstract class MixinWandItem extends BasicItem
 
     /**
      * Injects a new event listener onto the Forge event bus.
-     * @param callback The {@link CallbackInfo} for the injection.
+     * @param callbackInformation The {@link CallbackInfo} for the injection.
      */
     @Inject(method = "<init>", at = @At("RETURN"))
-    void InjectEventBus(CallbackInfo callback)
+    void InjectEventBus(CallbackInfo callbackInformation)
     {
         MinecraftForge.EVENT_BUS.addListener(this::OnWandUseMiss);
         MinecraftForge.EVENT_BUS.addListener(this::OnWandUseHit);
@@ -81,19 +81,15 @@ public abstract class MixinWandItem extends BasicItem
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker)
     {
-        stack.hurtAndBreak(1, attacker, (targetEntity) -> targetEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
-        target.hurt(DamageSource.MAGIC, VaultGearData.read(stack).get(AdditionGearAttributes.MAGIC_POWER, VaultGearAttributeTypeMerger.floatSum()));
+        if (attacker instanceof Player player)
+        {
+            stack.hurtAndBreak(1, player, (targetEntity) -> targetEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+            target.hurt(DamageSource.MAGIC, AbilityPowerHelper.getAbilityPower(player) * VaultGearData.read(stack).get(AdditionalGearAttributes.MAGIC_POWER, VaultGearAttributeTypeMerger.floatSum()));
 
-        return true;
-    }
+            return true;
+        }
 
-    /**
-     * Casts the Wand playing particles and sending a message to the server.
-     * @param event The {@link PlayerInteractEvent} event triggering the Wand cast.
-     */
-    void UseWand(PlayerInteractEvent event)
-    {
-
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     /**

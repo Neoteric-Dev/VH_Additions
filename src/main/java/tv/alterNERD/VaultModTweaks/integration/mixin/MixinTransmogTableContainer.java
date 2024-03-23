@@ -176,7 +176,6 @@ public abstract class MixinTransmogTableContainer extends OverSizedSlotContainer
         int platinumCount = (platinumSlot.hasItem() && platinumSlot.getItem().is(ModBlocks.VAULT_PLATINUM)) ? platinumSlot.getItem().getCount() : 0;
 
         callbackInformationReturnable.setReturnValue((bronzeCount + (silverCount * 9) + (goldCount * 81) + (platinumCount * 729)) >= copperCost());
-        ///callbackInformationReturnable.setReturnValue(true);
         callbackInformationReturnable.cancel();
     }
 

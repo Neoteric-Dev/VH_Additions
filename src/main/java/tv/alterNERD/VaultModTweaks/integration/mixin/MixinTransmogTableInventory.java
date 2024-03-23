@@ -13,28 +13,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(TransmogTableInventory.class)
 public abstract class MixinTransmogTableInventory extends RecipeInventory
 {
-    //region Fields
-
-    ///**
-    // * Add a Silver coin slot field to the {@link TransmogTableInventory}.
-    // */
-    //@Unique
-    //static final int SILVER_SLOT = 2;
-    //
-    ///**
-    // * Add a Gold coin slot field to the {@link TransmogTableInventory}.
-    // */
-    //@Unique
-    //static final int GOLD_SLOT = 3;
-    //
-    ///**
-    // * Add a Platinum coin slot field to the {@link TransmogTableInventory}.
-    // */
-    //@Unique
-    //static final int PLATINUM_SLOT = 4;
-
-    //endregion
-
     //region Initialisation
 
     /**

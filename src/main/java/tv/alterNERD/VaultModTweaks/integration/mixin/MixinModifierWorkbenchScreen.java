@@ -22,7 +22,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -53,14 +55,16 @@ public abstract class MixinModifierWorkbenchScreen extends AbstractElementContai
     /**
      * Shadows the {@link TextInputElement} searchInput field in the {@link ModifierWorkbenchScreen} to be accessed locally.
      */
+    @Mutable
+    @Final
     @Shadow
-    final TextInputElement<?> searchInput;
+    private final TextInputElement<?> searchInput;
 
     /**
      * Shadows the {@link TextInputElement} selectedOption field in the {@link ModifierWorkbenchScreen} to be accessed locally.
      */
     @Shadow
-    ModifierWorkbenchHelper.CraftingOption selectedOption;
+    private ModifierWorkbenchHelper.CraftingOption selectedOption;
 
     //endregion
 

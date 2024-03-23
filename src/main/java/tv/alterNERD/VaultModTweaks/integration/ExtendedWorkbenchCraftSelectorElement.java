@@ -96,6 +96,8 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
 
     //endregion
 
+    //region ExtendedWorkbenchCraftSelectorModel
+
     public static class ExtendedWorkbenchCraftSelectorModel<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>> extends ScrollableListSelectorElement.SelectorModel<E, VaultGearWorkbenchConfig.CraftableModifierConfig>
     {
         //region Fields
@@ -200,6 +202,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
 
         //endregion
     }
+
+    //endregion
+
+    //region ExtendedWorkbenchCraftElement
 
     public static class ExtendedWorkbenchCraftElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchCraftElement<E>> extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>
     {
@@ -362,6 +368,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
         //endregion
     }
 
+    //endregion
+
+    //region ExtendedWorkbenchRemoveCraftElement
+
     public static class ExtendedWorkbenchRemoveCraftElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchRemoveCraftElement<E>> extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>
     {
         //region Fields
@@ -430,6 +440,10 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
 
         //endregion
     }
+
+    //endregion
+
+    //region ExtendedWorkbenchListElement
 
     public abstract static class ExtendedWorkbenchListElement<E extends ExtendedWorkbenchCraftSelectorElement.ExtendedWorkbenchListElement<E>> extends SelectableButtonElement<E>
     {
@@ -509,4 +523,6 @@ public class ExtendedWorkbenchCraftSelectorElement<E extends ExtendedWorkbenchCr
 
         //endregion
     }
+
+    //endregion
 }

@@ -24,6 +24,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
@@ -47,6 +48,7 @@ public abstract class MixinModificationButtonElement extends ButtonElement
     /**
      * Shadow in the {@link Random} rand field from the {@link ModificationButtonElement}.
      */
+    @Final
     @Shadow
     private static final Random rand = new Random();
 

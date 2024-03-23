@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,6 +37,7 @@ public abstract class MixinGearModificationAction
     /**
      * Shadow the {@link Random} instance in the {@link GearModificationAction} to be accessed locally.
      */
+    @Final
     @Shadow
     private static final Random rand = new Random();
 

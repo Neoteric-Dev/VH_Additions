@@ -57,7 +57,6 @@ public class MixinTransmogButtonMessage
         if (totalBronzeCostRemaining - bronze.getCount() <= 0)
         {
             bronze.shrink(totalBronzeCostRemaining);
-            VaultModTweaks.LOGGER.error("BO Cost: " + totalBronzeCostRemaining);
         }
 
         else
@@ -70,7 +69,6 @@ public class MixinTransmogButtonMessage
                 bronze.setCount(9 - (totalBronzeCostRemaining % 9));
 
                 silver.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 9)));
-                VaultModTweaks.LOGGER.error("BS Cost: " + totalBronzeCostRemaining);
             }
 
             else
@@ -86,7 +84,6 @@ public class MixinTransmogButtonMessage
                     silver.setCount((81 - (totalBronzeCostRemaining % 81)) / 9);
 
                     gold.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 81)));
-                    VaultModTweaks.LOGGER.error("BSG Cost: " + totalBronzeCostRemaining);
                 }
 
                 else
@@ -103,7 +100,6 @@ public class MixinTransmogButtonMessage
                     gold.setCount((729 - (totalBronzeCostRemaining % 729)) / 81);
 
                     platinum.shrink((int)(Math.ceil((double)totalBronzeCostRemaining / 729)));
-                    VaultModTweaks.LOGGER.error("BSGP Cost: " + totalBronzeCostRemaining);
                 }
             }
         }
